@@ -20,11 +20,14 @@
         </li>
       </ul>
     </div>
+
   </div>
   <br>
 </template>
 
 <script>
+import {getWeather} from "../request/HomeHeader";
+
 export default {
   name: "DefaultHeader",
   data(){
@@ -46,18 +49,12 @@ export default {
       city: ''
     }
   },
-  methods:{
-    // 获取当前气温
-    getWeather:function (){
-      this.axios.get('https://restapi.amap.com/v3/weather/weatherInfo?key=04e0a4356d54a59f73d82e66f6555188&city=350200&extensions=base&output=JSON').then(res =>{
-        // console.log(res)
-        this.temperature = res.data.lives[0].temperature
-        this.city = res.data.lives[0].city
-      })
-    }
-  },
   created() {
-    this.getWeather()
+    getWeather().then((res)=>{
+      // console.log(res)
+      this.temperature = res.data.lives[0].temperature
+      this.city = res.data.lives[0].city
+    })
   }
 }
 </script>

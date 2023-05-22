@@ -21,18 +21,13 @@
           <router-link :id="nav_item.id" :to="nav_item.path">{{nav_item.name}}</router-link>
         </li>
       </ul>
-
-      <div class="banner">
-        <p>海上花园 诗意厦门</p>
-      </div>
     </div>
 
   </div>
 </template>
 
 <script>
-// import axios from "axios";
-
+import  {getWeather} from '../request/HomeHeader.js'
 export default {
   name: "HomeHeader",
   data(){
@@ -54,18 +49,11 @@ export default {
       city: ''
     }
   },
-  methods:{
-    // 获取当前气温
-    getWeather:function (){
-      this.axios.get('https://restapi.amap.com/v3/weather/weatherInfo?key=04e0a4356d54a59f73d82e66f6555188&city=350200&extensions=base&output=JSON').then(res =>{
-        // console.log(res)
-        this.temperature = res.data.lives[0].temperature
-        this.city = res.data.lives[0].city
-      })
-    }
-  },
   created() {
-    this.getWeather()
+    getWeather().then((res)=>{
+      this.temperature = res.data.lives[0].temperature
+      this.city = res.data.lives[0].city
+    })
   }
 }
 </script>
@@ -74,7 +62,7 @@ export default {
 /*头部*/
 .header{
   margin-top: 10px;
-  height: 445px;
+  height: 100px;
 }
 .header img{
   float: left;

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="title">旅游资讯</div>
+    <div class="title">{{ title }}</div>
     <div class="content" v-for="(item,index) in list" @click="showNews(item)" v-show="((currentPage-1)*pageSize < index+1) && (index+1 <= currentPage*pageSize)">
       <div class="top">{{item.title}}</div>
       <div class="date">{{ item.date }}</div>
@@ -21,23 +21,12 @@
 </template>
 
 <script>
+import {getArticleList} from "../request/article";
 export default {
   name: "SelfTemplate1",
   data(){
     return{
-      list: [
-        {id: '0', title: '周六强冷空气抵厦 下周一最低温4℃', date: '2022-12-14'},
-        {id: '1', title: '厦门一处山地公园焕新上线', date: '2023-02-23'},
-        {id: '2', title: '邓超来厦门！这些地方又要火了→', date: '2022-12-14'},
-        {id: '3', title: '定了！盼了一年！免票，详情请戳→', date: '2022-12-14'},
-        {id: '4', title: '作家李秋沅荣获 国际儿童文学奖', date: '2022-12-14'},
-        {id: '5', title: '激发产业新活力 开创文旅新格局', date: '2022-12-14'},
-        {id: '6', title: '翔安东路紫花绣球风铃木花开正盛', date: '2022-12-14'},
-        {id: '7', title: '厦门近期天气忽冷忽热 "春捂"要做好以防着凉感冒', date: '2022-12-14'},
-        {id: '8', title: '美食藏不住了！这家沙茶面登上《早餐中国》→', date: '2022-12-14'},
-        {id: '9', title: '二月二龙抬头 海沧刘山社:送“红龟”寓意“吉祥幸福”', date: '2022-12-14'},
-        {id: '10', title: '本周闽南大戏院好戏连台', date: '2022-12-14'},
-      ],
+      list: [],
       currentPage: 1, //初始页
       pageSize: 6, //    每页的数据
       total: 0,  //总数
@@ -45,6 +34,7 @@ export default {
       preDisable: false
     }
   },
+  props:['title'],
   methods:{
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -53,13 +43,17 @@ export default {
       console.log(`当前页: ${val}`);
     },
     showNews:function (val){
-      // console.log(val)
-      this.$router.push({
-        path: '/news',
-        query:{
-          id: val.id, title: '旅游资讯', sub_title: val.title, date: val.date
+      console.log(val)
+      // return
+      let routeData = this.$router.resolve({
+        name: 'news',
+        query: {
+          title: '旅游资讯',
+          row: JSON.stringify(val)
         }
       })
+      window.open(routeData.href, '_blank')
+
     },
     nextPage:function (){
       if(Math.ceil(this.total/this.pageSize)!=this.currentPage){
@@ -72,10 +66,13 @@ export default {
         this.currentPage-=1;
         this.nextDisable = false
       }
-    }
+    },
   },
-  mounted() {
+  async created() {
+    // 获取旅游咨询列表
+    this.list =await getArticleList()
     this.total = this.list.length
+
   },
   beforeUpdate() {
     if(Math.ceil(this.total/this.pageSize)==this.currentPage){

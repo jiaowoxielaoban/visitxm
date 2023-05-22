@@ -8,17 +8,16 @@
     </div>
 
     <div class="content"
-         v-for="(item,index) in content"
+         v-for="(item,index) in tmp_content"
          @click="showDetail(item)"
          v-show="(label==null || item.label == label) && (((currentPage-1)*pageSize < index+1) && (index+1 <= currentPage*pageSize)) ">
-      <img :src="item.img">
-      <div v-if="item.date==null" class="txt">{{ item.txt }}</div>
+      <img :src="imageUrl+item.filename">
+      <div v-if="item.date==null" class="txt">{{ item.title }}</div>
       <div v-else class="txt">
-        <div>{{item.txt}}</div>
+        <div>{{item.title}}</div>
         <div class="liveDate">{{item.date}}</div>
       </div>
     </div>
-
 
     <!--分页实现-->
     <div class="page">
@@ -46,26 +45,43 @@ export default {
       label: null,
       currentIndex: -1,
       nextDisable: false,
-      preDisable: false
-
+      preDisable: false,
+      imageUrl: 'http://localhost:3000/images/',
+      tmp_content: this.content     // 临时变量：设置当前景区内容列表
     }
   },
+  /*
+  title: 当前标题
+  list: 景区标签
+  content: 景区内容列表
+   */
   props:['title', 'list', 'content'],    // 接受父级组件传递的参数
   methods:{
+    // 选择景区标签
     radioChoose:function (val){
+      this.tmp_content = []
       this.label = this.list[val]
       this.currentIndex = val
-      // console.log(this.label)
-    },
-    //查看页面详情
-    showDetail:function (val){
-      // console.log(val)
-      this.$router.push({
-        path: '/news',
-        query:{
-          id: val.id, title: this.title, sub_title: val.txt, img: val.img
+      this.content.forEach(item=>{
+        // console.log(item.label, item.label == this.label)
+        if(item.label == this.label){
+          this.tmp_content.push(item)
         }
       })
+    },
+    //查看页面详情
+    showDetail:function (item){
+
+      let routeData = this.$router.resolve({
+        name: 'news',
+        query: {
+          title: '景区',
+          row: JSON.stringify(item)
+        }
+      })
+      window.open(routeData.href, '_blank')
+      console.log(item)
+
     },
     nextPage:function (){
       if(Math.ceil(this.total/this.pageSize)!=this.currentPage){
@@ -81,9 +97,16 @@ export default {
     }
   },
   components:{Page},
-  mounted() {
-    this.total = this.content.length
-    console.log(this.content)
+  watch:{
+    content(newVal, oldVal){
+      console.log('content change', newVal)
+      this.tmp_content = newVal
+    },
+    // 监听当前内容列表，如果变化，改变分页的页码总数
+    tmp_content(newVal, oldVal){
+      // console.log('tmp_content change')
+      this.total = this.tmp_content.length
+    }
   },
   beforeUpdate() {
     if(Math.ceil(this.total/this.pageSize)==this.currentPage){
@@ -92,7 +115,7 @@ export default {
     if(this.currentPage==1){
       this.preDisable = true
     }
-  }
+  },
 }
 </script>
 

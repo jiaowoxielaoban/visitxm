@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
+  mode: 'History',
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
@@ -92,6 +93,30 @@ const router = createRouter({
           name: 'travelTips',
           component: () => import('../views/TravelTips.vue')
         },
+      ]
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: ()=>import('../views/admin/Home.vue'),
+      children:[
+        {
+          path: 'login',
+          name: 'login',
+          component: () => import('../views/login_token/Login.vue')
+
+        },
+        {
+          path: 'article',
+          name: 'Article',
+          component: () => import('../views/admin/Article.vue')
+        },
+        {
+          path: 'userManage',
+          name: 'UserManage',
+          component: () => import('../views/admin/UserManage.vue')
+        }
+
       ]
     },
     {

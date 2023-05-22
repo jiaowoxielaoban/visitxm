@@ -3,7 +3,9 @@
   <div class="back">
     <!--    头部部分-->
     <HomeHeader></HomeHeader>
-
+    <div class="banner">
+      <p>海上花园 诗意厦门</p>
+    </div>
 
     <!--p4 版心-->
     <div class="container">
@@ -39,18 +41,10 @@ import Top5 from "@/components/Top5.vue";
 import HomeHeader from '@/components/HomeHeader.vue'
 import HomeFooter from "@/components/HomeFooter.vue";
 
+
 export default {
   name: "home",
-  data(){
-    return{
-
-    }
-  },
   components: {Top3, Top1, Top2, Top4, Top5, HomeHeader, HomeFooter},
-  methods:{
-
-  },
-
 }
 </script>
 
@@ -65,6 +59,22 @@ export default {
 /*整个网页添加背景图片*/
 .back{
   background: url("/img/bg.jpg");
+}
+
+.banner{
+  width: 100%;
+  height: 340px;
+  /*background-color: red;*/
+  background: url("src/img/bpic.jpg");
+  overflow: hidden;
+}
+.banner>p{
+  color: white;
+  font-size: 56px;
+  margin-left: 1000px;
+  margin-top: 35px;
+  /*padding-top: 35px;*/
+  /*border: 1px solid red;*/
 }
 
 
